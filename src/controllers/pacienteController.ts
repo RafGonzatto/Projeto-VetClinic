@@ -1,21 +1,21 @@
 import { Request, Response } from 'express'
-import { PacienteInstance } from '../models/pacienteModel'
 import definePacienteModel from '../models/pacienteModel'
+import PacienteRepository from '../repository/pacienteRepository'
 
 class PacienteController {
   static async criarPaciente(req: Request, res: Response) {
     try {
-      const PacienteModel = definePacienteModel(req.context.db)
-      const maxIdPaciente = (await PacienteModel.max('id')) as number | null
-      const proximoId = maxIdPaciente !== null ? maxIdPaciente + 1 : 1
-      const tutorId = parseInt(req.params.tutorId)
+      let PacienteModel = definePacienteModel(req.context.db)
+      let maxIdPaciente = (await PacienteModel.max('id')) as number | null
+      let proximoId = maxIdPaciente !== null ? maxIdPaciente + 1 : 1
+      let tutorId = parseInt(req.params.tutorId)
       if (!req.body.nome || !req.body.especie) {
         return res
           .status(400)
           .json({ message: 'O nome e a espécie do paciente são obrigatórios' })
       }
 
-      const novoPaciente = await PacienteModel.create({
+      let novoPaciente = await PacienteModel.create({
         id: proximoId,
         nome: req.body.nome,
         especie: req.body.especie,
@@ -29,20 +29,20 @@ class PacienteController {
   }
 
   static async atualizarPaciente(req: Request, res: Response) {
-    const pacienteId = req.params.id
+    let pacienteId = req.params.pacienteId
+    let tutorId = req.params.tutorId
     try {
-      const PacienteModel = definePacienteModel(req.context.db)
-      const [updated] = await PacienteModel.update(req.body, {
-        where: { id: pacienteId },
+      let PacienteModel = definePacienteModel(req.context.db)
+      let updatedPaciente = await PacienteModel.findOne({
+        where: { id: pacienteId, tutorId: tutorId },
       })
 
-      if (updated) {
-        const updatedPaciente = await PacienteModel.findOne({
-          where: { id: pacienteId },
-        })
-        return res.status(200).json(updatedPaciente)
+      if (!updatedPaciente) {
+        throw new Error('Paciente não encontrado')
       }
-      throw new Error('Paciente não encontrado')
+
+      await updatedPaciente.update(req.body)
+      return res.status(200).json(updatedPaciente)
     } catch (error) {
       console.error('Erro ao atualizar paciente:', error)
       res.status(500).json({ error: 'Erro ao atualizar paciente' })
@@ -50,11 +50,12 @@ class PacienteController {
   }
 
   static async deletarPaciente(req: Request, res: Response) {
-    const pacienteId = req.params.id
+    let pacienteId = req.params.pacienteId
+    let tutorId = req.params.tutorId
     try {
-      const PacienteModel = definePacienteModel(req.context.db)
-      const deleted = await PacienteModel.destroy({
-        where: { id: pacienteId },
+      let PacienteModel = definePacienteModel(req.context.db)
+      let deleted = await PacienteModel.destroy({
+        where: { id: pacienteId, tutorId: tutorId },
       })
 
       if (deleted) {

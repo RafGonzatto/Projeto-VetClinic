@@ -1,6 +1,6 @@
 # Projeto VetClinic :dog:
 
-Este é um projeto para uma clínica veterinária, desenvolvido com TypeScript, Express.js e Sequelize.
+Este é um projeto para uma clínica veterinária fictícia, desenvolvido com TypeScript, Express.js e Sequelize.
 
 ## Descrição
 
@@ -27,7 +27,7 @@ O Projeto VetClinic é uma aplicação para gerenciamento de tutores e pacientes
 2. **Configuração do Banco de Dados:**
 
    Certifique-se de configurar corretamente o banco de dados no arquivo `.env` com as variáveis `DB_DIALECT` e `DB_STORAGE`.
-   
+
 3. **Compile os arquivos TypeScript:**
 
    Para compilar arquivos TypeScript, execute o seguinte comando, com isto serão gerados arquivos JavaScript que seu navegador conseguirá interpretar:
@@ -36,7 +36,7 @@ O Projeto VetClinic é uma aplicação para gerenciamento de tutores e pacientes
    tsc
    ```
 
-3. **Execução do Projeto:**
+4. **Execução do Projeto:**
 
    Para iniciar o servidor, execute o seguinte comando:
 
@@ -50,18 +50,16 @@ O Projeto VetClinic é uma aplicação para gerenciamento de tutores e pacientes
 
 Após iniciar o servidor, você pode começar a fazer solicitações à API utilizando ferramentas como Postman ou cURL. Consulte a documentação Swagger em `http://localhost:3000/api-docs` para obter informações sobre os endpoints disponíveis e seus parâmetros.
 
- **Exemplo de comando**
+**Exemplo de comando**
 
-   
-   ```bash
-   No Postman sete sua url para POST http://localhost:3000/api/paciente/1
-   E adicione ao Body - raw o seguinte json
-   {
-    "nome": "Fidorento",
-    "especie": "Cachorro dos Lagos"
+```bash
+No Postman sete sua url para POST http://localhost:3000/api/paciente/1
+E adicione ao Body - raw o seguinte json
+{
+ "nome": "Fidorento",
+ "especie": "Cachorro dos Lagos"
 }
-   ```
-
+```
 
 ## Contribuição :tiger:
 
@@ -72,4 +70,3 @@ Contribuições são bem-vindas! Se você quiser contribuir para este projeto, s
 3. Faça commit das suas alterações
 4. Faça push para a branch (`git push origin feature/nova-feature`)
 5. Abra um pull request
-

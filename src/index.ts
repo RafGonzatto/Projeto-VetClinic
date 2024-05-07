@@ -3,8 +3,7 @@ import routes from './routes/routes'
 import sequelize from '../database/conexao'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJSDoc from 'swagger-jsdoc'
-import definePacienteModel from './models/pacienteModel'
-import defineTutorModel from './models/tutorModel'
+import defineModels, { Models } from './models/RepositorioModels'
 
 const app = express()
 const PORT = 3000
@@ -31,11 +30,9 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJSDoc(swaggerOptions)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
-app.use('/api', routes)
+app.use('/', routes)
 
-const Paciente = definePacienteModel(sequelize)
-
-const Tutor = defineTutorModel(sequelize)
+const models: Models = defineModels(sequelize)
 
 sequelize
   .sync()
