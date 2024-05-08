@@ -21,10 +21,10 @@ const swaggerOptions = {
     info: {
       title: 'API da VetClinic',
       version: '1.0.0',
-      description: 'Documentação da API da VetClinic',
+      description: 'Documentação da API do Projeto VetClinic',
     },
   },
-  apis: ['./routes/routes.ts'],
+  apis: [`${__dirname}/routes/routes.ts`],
 }
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions)
