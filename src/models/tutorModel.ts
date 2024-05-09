@@ -1,43 +1,28 @@
-import { Sequelize, DataTypes, Model } from 'sequelize'
+import { Entity, Column, BaseEntity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Paciente } from './pacienteModel'; 
 
-export interface TutorAttributes {
-  id: number
-  nome: string
-  email: string
-  telefone: string
-}
+@Entity('Tutor')
+export class Tutor extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id?: number;
 
-export interface TutorInstance
-  extends Model<TutorAttributes>,
-    TutorAttributes {}
+  @Column({ nullable: false })
+  nome?: string;
 
-export default function defineTutorModel(sequelize: Sequelize) {
-  const Tutor = sequelize.define<TutorInstance>(
-    'Tutor',
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        allowNull: false,
-      },
-      nome: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      telefone: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-    },
-    {
-      tableName: 'Tutor',
-    },
-  )
+  @Column({ nullable: false, unique: true })
+  email?: string;
 
-  return Tutor
+  @Column({ nullable: false })
+  telefone?: string;
+
+  @OneToMany(() => Paciente, paciente => paciente.tutor)
+  pacientes?: Paciente[];
+
+  constructor() {
+    super();
+    this.id = 1; 
+    this.nome = '';
+    this.email = '';
+    this.telefone = '';
+  }
 }

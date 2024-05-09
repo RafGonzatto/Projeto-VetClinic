@@ -1,6 +1,6 @@
 # Projeto VetClinic :dog:
 
-Este é um projeto para uma clínica veterinária fictícia, desenvolvido com TypeScript, Express.js e Sequelize.
+Este é um projeto para uma clínica veterinária fictícia, desenvolvido com TypeScript, Express.js e TypeOrm.
 
 ## Descrição
 
@@ -10,7 +10,7 @@ O Projeto VetClinic é uma aplicação para gerenciamento de tutores e pacientes
 
 - TypeScript
 - Express.js
-- Sequelize
+- TypeOrm
 - Prettier
 - Swagger
 

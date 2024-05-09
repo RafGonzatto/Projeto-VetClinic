@@ -4,36 +4,14 @@ import PacienteController from '../controllers/pacienteController'
 const router = Router()
 /**
  * @swagger
- * /tutor/{id}:
- *   put:
- *     summary: Atualiza um tutor existente
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: ID do tutor a ser atualizado
- *       - in: body
- *         name: body
- *         required: true
- *         description: Novos detalhes do tutor
- *         schema:
- *           type: object
- *           properties:
- *             nome:
- *               type: string
- *             email:
- *               type: string
- *             telefone:
- *               type: string
+ * /tutor:
+ *   get:
+ *     summary: Lista todos os tutores cadastrados.
  *     responses:
  *       '200':
- *         description: Tutor atualizado com sucesso
- *       '404':
- *         description: Tutor não encontrado
+ *         description: "Uma das seguintes operações bem sucedida ocorreu: Retorna uma lista de todos os tutores, Não há nenhum tutor cadastrado"
  *       '500':
- *         description: Erro ao atualizar tutor
+ *         description: Erro ao listar tutores.
  */
 router.get('/tutor', TutorController.listarTutores)
 /**
@@ -57,6 +35,8 @@ router.get('/tutor', TutorController.listarTutores)
  *     responses:
  *       '201':
  *         description: Tutor criado com sucesso
+ *       '400':
+ *         description: Nome, email e telefone são obrigatórios
  *       '500':
  *         description: Erro ao criar tutor
  */
@@ -73,19 +53,20 @@ router.post('/tutor', TutorController.criarTutor)
  *         schema:
  *           type: integer
  *         description: ID do tutor a ser atualizado
- *       - in: body
- *         name: body
- *         required: true
- *         description: Novos detalhes do tutor
- *         schema:
- *           type: object
- *           properties:
- *             nome:
- *               type: string
- *             email:
- *               type: string
- *             telefone:
- *               type: string
+ *     requestBody:
+ *       required: true
+ *       description: Novos detalhes do tutor
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nome:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               telefone:
+ *                 type: string
  *     responses:
  *       '200':
  *         description: Tutor atualizado com sucesso
@@ -94,6 +75,7 @@ router.post('/tutor', TutorController.criarTutor)
  *       '500':
  *         description: Erro ao atualizar tutor
  */
+
 router.put('/tutor/:id', TutorController.atualizarTutor)
 /**
  * @swagger
@@ -180,6 +162,10 @@ router.post('/paciente/:tutorId', PacienteController.criarPaciente)
  *     responses:
  *       '200':
  *         description: Paciente atualizado com sucesso
+ *       '400':
+ *         description: O nome e a espécie do paciente são obrigatórios
+ *       '404':
+ *         description: Tutor não encontrado
  *       '500':
  *         description: Erro ao atualizar paciente
  */

@@ -1,16 +1,4 @@
-import definePacienteModel from './pacienteModel'
-import defineTutorModel from './tutorModel'
-import { Sequelize } from 'sequelize'
+import { Paciente } from '../models/pacienteModel';
+import { Tutor } from '../models/tutorModel';
 
-const sequelizeModels = (sequelize: Sequelize) => {
-  const Paciente = definePacienteModel(sequelize)
-  const Tutor = defineTutorModel(sequelize)
-
-  return {
-    Paciente,
-    Tutor,
-  }
-}
-
-export type Models = ReturnType<typeof sequelizeModels>
-export default sequelizeModels
+export const RepositorioModels = [Paciente, Tutor];
