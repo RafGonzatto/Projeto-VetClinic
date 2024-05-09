@@ -3,8 +3,6 @@ import routes from './routes/routes';
 import conexao from '../database/conexao'; 
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
-import { Paciente } from './models/pacienteModel';
-import { Tutor } from './models/tutorModel';
 
 const app = express();
 const PORT = 3000;

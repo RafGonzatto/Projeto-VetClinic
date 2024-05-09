@@ -5,3 +5,7 @@ declare namespace Express {
     };
   }
 }
+
+interface CustomError extends Error {
+  status?: number;
+}
