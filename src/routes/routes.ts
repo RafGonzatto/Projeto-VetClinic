@@ -1,8 +1,8 @@
-import { Router } from 'express';
-import TutorController from '../controllers/tutorController';
-import PacienteController from '../controllers/pacienteController';
+import { Router } from 'express'
+import TutorController from '../controllers/tutorController'
+import PacienteController from '../controllers/pacienteController'
 
-const router = Router();
+const router = Router()
 
 /**
  * @swagger
@@ -23,7 +23,7 @@ const router = Router();
  *       '500':
  *         description: Erro ao listar tutores.
  */
-router.get('/tutor', TutorController.listarTutores);
+router.get('/tutor', TutorController.listarTutores)
 
 /**
  * @swagger
@@ -54,7 +54,7 @@ router.get('/tutor', TutorController.listarTutores);
  *       '500':
  *         description: Erro ao criar tutor
  */
-router.post('/tutor', TutorController.criarTutor);
+router.post('/tutor', TutorController.criarTutor)
 
 /**
  * @swagger
@@ -90,7 +90,7 @@ router.post('/tutor', TutorController.criarTutor);
  *       '500':
  *         description: Erro ao atualizar tutor
  */
-router.put('/tutor/:id', TutorController.atualizarTutor);
+router.put('/tutor/:id', TutorController.atualizarTutor)
 
 /**
  * @swagger
@@ -111,7 +111,7 @@ router.put('/tutor/:id', TutorController.atualizarTutor);
  *       '500':
  *         description: Erro ao excluir tutor
  */
-router.delete('/tutor/:id', TutorController.deletarTutor);
+router.delete('/tutor/:id', TutorController.deletarTutor)
 
 /**
  * @swagger
@@ -148,7 +148,10 @@ router.delete('/tutor/:id', TutorController.deletarTutor);
  *       '500':
  *         description: Erro ao buscar paciente do tutor.
  */
-router.get('/paciente/:pacienteId/tutor/:tutorId', PacienteController.buscarPaciente);
+router.get(
+  '/paciente/:pacienteId/tutor/:tutorId',
+  PacienteController.buscarPaciente,
+)
 
 /**
  * @swagger
@@ -172,7 +175,7 @@ router.get('/paciente/:pacienteId/tutor/:tutorId', PacienteController.buscarPaci
  *       '500':
  *         description: Erro ao buscar pacientes do tutor.
  */
-router.get('/paciente/tutor/:tutorId', PacienteController.buscarPacientesTutor);
+router.get('/paciente/tutor/:tutorId', PacienteController.buscarPacientesTutor)
 
 /**
  * @swagger
@@ -186,7 +189,7 @@ router.get('/paciente/tutor/:tutorId', PacienteController.buscarPacientesTutor);
  *       '500':
  *         description: Erro ao buscar pacientes
  */
-router.get('/paciente', PacienteController.listarPacientes);
+router.get('/paciente', PacienteController.listarPacientes)
 
 /**
  * @swagger
@@ -220,7 +223,7 @@ router.get('/paciente', PacienteController.listarPacientes);
  *       '500':
  *         description: Erro ao criar paciente
  */
-router.post('/paciente/:tutorId', PacienteController.criarPaciente);
+router.post('/paciente/:tutorId', PacienteController.criarPaciente)
 
 /**
  * @swagger
@@ -245,7 +248,7 @@ router.post('/paciente/:tutorId', PacienteController.criarPaciente);
  *       required: true
  *       content:
  *         application/json:
- *           schema:    
+ *           schema:
  *             type: object
  *             properties:
  *               nome:
@@ -262,7 +265,10 @@ router.post('/paciente/:tutorId', PacienteController.criarPaciente);
  *       '500':
  *         description: Erro ao atualizar paciente
  */
-router.put('/paciente/:pacienteId/tutor/:tutorId', PacienteController.atualizarPaciente);
+router.put(
+  '/paciente/:pacienteId/tutor/:tutorId',
+  PacienteController.atualizarPaciente,
+)
 
 /**
  * @swagger
@@ -289,6 +295,9 @@ router.put('/paciente/:pacienteId/tutor/:tutorId', PacienteController.atualizarP
  *       '500':
  *         description: Erro ao deletar paciente
  */
-router.delete('/paciente/:pacienteId/tutor/:tutorId', PacienteController.deletarPaciente);
+router.delete(
+  '/paciente/:pacienteId/tutor/:tutorId',
+  PacienteController.deletarPaciente,
+)
 
-export default router;
+export default router

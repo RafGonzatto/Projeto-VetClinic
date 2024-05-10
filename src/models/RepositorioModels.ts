@@ -1,4 +1,4 @@
-import { Paciente } from '../models/pacienteModel';
-import { Tutor } from '../models/tutorModel';
+import { Paciente } from '../models/pacienteModel'
+import { Tutor } from '../models/tutorModel'
 
-export const RepositorioModels = [Paciente, Tutor];
+export const RepositorioModels = [Paciente, Tutor]
