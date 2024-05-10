@@ -6,7 +6,15 @@ import { PacienteRepository } from '../repositories/pacienteRepository';
 export class PacienteService {
   static async buscarPacientesPorTutor(tutorId: number): Promise<Paciente[]> {
     const pacienteRepository = getRepository(Paciente);
-    return await pacienteRepository.find({ where: { tutor: { id: tutorId}  } });
+    return await pacienteRepository.find({ where: { tutor: { id: tutorId}  }, relations: ['tutor'] });
+  }
+  static async buscarPaciente(pacienteId: number, tutorId: number): Promise<Paciente[]> {
+    const pacienteRepository = getRepository(Paciente);
+    return await pacienteRepository.find({ where: { id : pacienteId, tutor: { id: tutorId} }, relations: ['tutor'] });
+  }
+  static async listarPacientes(): Promise<Paciente[]> {
+    const pacienteRepository = getRepository(Paciente);
+    return await pacienteRepository.find({ relations: ['tutor'] });
   }
   static async criarPaciente(nome: string, especie: string, tutorId: number): Promise<Paciente> {
     const pacienteRepository = getRepository(Paciente);
