@@ -8,11 +8,14 @@ O Projeto VetClinic é uma aplicação para gerenciamento de tutores e pacientes
 
 ## Tecnologias Utilizadas
 
-- TypeScript
-- Express.js
-- TypeOrm
-- Prettier
-- Swagger
+- TypeScript@^5.4.5
+- Express.js@^4.19.2
+- TypeOrm@^0.3.20
+- Prettier@^3.2.5
+- Swagger-jsdoc@^6.2.8
+- Swagger-ui-express@^5.0.0
+- Nodemon@^3.1.0
+- Concurrently@^8.2.2
 
 ## Configuração
 
@@ -26,22 +29,14 @@ O Projeto VetClinic é uma aplicação para gerenciamento de tutores e pacientes
 
 2. **Configuração do Banco de Dados:**
 
-   Certifique-se de configurar corretamente o banco de dados no arquivo `.env` com as variáveis `DB_DIALECT` e `DB_STORAGE`.
+   Certifique-se de configurar corretamente o banco de dados no arquivo `.env` com a variável `DB_PATH` com o caminho onde ficará seu banco de dados.
 
-3. **Compile os arquivos TypeScript:**
+3. **Compilação e Execução dos arquivos TypeScript:**
 
-   Para compilar arquivos TypeScript, execute o seguinte comando, com isto serão gerados arquivos JavaScript que seu navegador conseguirá interpretar:
-
-   ```bash
-   tsc
-   ```
-
-4. **Execução do Projeto:**
-
-   Para iniciar o servidor, execute o seguinte comando:
+   Para compilar arquivos TypeScript, execute o seguinte comando. Isso gerará arquivos JavaScript que seu servidor poderá interpretar e já executara o projeto:
 
    ```bash
-   npm start
+   npm run dev
    ```
 
    O servidor estará disponível em `http://localhost:3000`.
@@ -53,8 +48,9 @@ Após iniciar o servidor, você pode começar a fazer solicitações à API util
 **Exemplo de comando**
 
 ```bash
-No Postman sete sua url para POST http://localhost:3000/api/paciente/1
-E adicione ao Body - raw o seguinte json
+No Postman, configure sua URL para POST http://localhost:3000/api/paciente/1
+E adicione ao Body - raw o seguinte JSON:
+
 {
  "nome": "Fidorento",
  "especie": "Cachorro dos Lagos"

@@ -7,7 +7,7 @@ const router = Router();
 /**
  * @swagger
  * tags:
- *   name: Tutors
+ *   name: Tutores
  *   description: Endpoints relacionados aos tutores
  */
 
@@ -16,7 +16,7 @@ const router = Router();
  * /tutor:
  *   get:
  *     summary: Lista todos os tutores cadastrados.
- *     tags: [Tutors]
+ *     tags: [Tutores]
  *     responses:
  *       '200':
  *         description: Retorna uma lista de todos os tutores.
@@ -30,13 +30,20 @@ router.get('/tutor', TutorController.listarTutores);
  * /tutor:
  *   post:
  *     summary: Cria um novo tutor
- *     tags: [Tutors]
+ *     tags: [Tutores]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Tutor'
+ *             type: object
+ *             properties:
+ *               nome:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               telefone:
+ *                 type: string
  *     responses:
  *       '201':
  *         description: Tutor criado com sucesso
@@ -54,7 +61,7 @@ router.post('/tutor', TutorController.criarTutor);
  * /tutor/{id}:
  *   put:
  *     summary: Atualiza um tutor existente
- *     tags: [Tutors]
+ *     tags: [Tutores]
  *     parameters:
  *       - in: path
  *         name: id
@@ -67,7 +74,14 @@ router.post('/tutor', TutorController.criarTutor);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Tutor'
+ *             type: object
+ *             properties:
+ *               nome:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               telefone:
+ *                 type: string
  *     responses:
  *       '200':
  *         description: Tutor atualizado com sucesso
@@ -83,7 +97,7 @@ router.put('/tutor/:id', TutorController.atualizarTutor);
  * /tutor/{id}:
  *   delete:
  *     summary: Exclui um tutor existente
- *     tags: [Tutors]
+ *     tags: [Tutores]
  *     parameters:
  *       - in: path
  *         name: id
@@ -192,7 +206,12 @@ router.get('/paciente', PacienteController.listarPacientes);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Paciente'
+ *             type: object
+ *             properties:
+ *               nome:
+ *                 type: string
+ *               especie:
+ *                 type: string
  *     responses:
  *       '200':
  *         description: Paciente criado com sucesso
@@ -226,8 +245,13 @@ router.post('/paciente/:tutorId', PacienteController.criarPaciente);
  *       required: true
  *       content:
  *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Paciente'
+ *           schema:    
+ *             type: object
+ *             properties:
+ *               nome:
+ *                 type: string
+ *               especie:
+ *                 type: string
  *     responses:
  *       '200':
  *         description: Paciente atualizado com sucesso

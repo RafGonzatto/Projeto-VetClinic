@@ -54,7 +54,7 @@ export class PacienteService {
       throw error; 
     }
 
-    const pacienteExistente = await pacienteRepository.findOne({ where: { id: pacienteId, tutor: { id: tutorId} } })
+    const pacienteExistente = await pacienteRepository.findOne({ where: { id: pacienteId, tutor: { id: tutorId} }, relations: ['tutor'] })
     if (!pacienteExistente) {
       const error: CustomError = new Error('Paciente não encontrado');
       error.status = 404; 
