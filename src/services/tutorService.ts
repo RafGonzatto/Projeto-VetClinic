@@ -14,6 +14,12 @@ export class TutorService {
       error.status = 400; 
       throw error; 
     }
+    const tutorExistente = await TutorRepository.buscarTutorPorEmail(email);
+    if (tutorExistente) {
+        const error: CustomError = new Error('Este email já foi cadastrado');
+        error.status = 409;
+        throw error;
+    }
     return await TutorRepository.criarTutor(nome, email, telefone);
   }
   static async atualizarTutor(id: number, nome: string, email: string, telefone: string): Promise<Tutor> {

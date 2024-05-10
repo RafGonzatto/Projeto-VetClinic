@@ -14,6 +14,7 @@ const router = Router()
  *         description: Erro ao listar tutores.
  */
 router.get('/tutor', TutorController.listarTutores)
+
 /**
  * @swagger
  * /tutor:
@@ -37,9 +38,12 @@ router.get('/tutor', TutorController.listarTutores)
  *         description: Tutor criado com sucesso
  *       '400':
  *         description: Nome, email e telefone são obrigatórios
+ *       '409':
+ *         description: Email já foi cadastrado
  *       '500':
  *         description: Erro ao criar tutor
  */
+
 router.post('/tutor', TutorController.criarTutor)
 /**
  * @swagger
@@ -98,6 +102,28 @@ router.put('/tutor/:id', TutorController.atualizarTutor)
  *         description: Erro ao excluir tutor
  */
 router.delete('/tutor/:id', TutorController.deletarTutor)
+/**
+ * @swagger
+ * /tutor/{id}:
+ *   get:
+ *     summary: Buscar pacientes por ID do tutor
+ *     description: Retorna uma lista de pacientes associados ao tutor com o ID fornecido.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: ID do tutor
+ *     responses:
+ *       '200':
+ *         description: Sucesso. Retorna a lista de pacientes.
+ *       '404':
+ *         description: Tutor não encontrado.
+ *       '500':
+ *         description: Erro ao buscar pacientes do tutor.
+ */
+router.get('/tutor/:id', PacienteController.buscarPacientesTutor)
 /**
  * @swagger
  * /paciente/{tutorId}:

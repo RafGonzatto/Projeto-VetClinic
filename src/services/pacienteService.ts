@@ -4,6 +4,10 @@ import { Tutor } from '../models/tutorModel';
 import { PacienteRepository } from '../repositories/pacienteRepository';
 
 export class PacienteService {
+  static async buscarPacientesPorTutor(tutorId: number): Promise<Paciente[]> {
+    const pacienteRepository = getRepository(Paciente);
+    return await pacienteRepository.find({ where: { tutor: { id: tutorId}  } });
+  }
   static async criarPaciente(nome: string, especie: string, tutorId: number): Promise<Paciente> {
     const pacienteRepository = getRepository(Paciente);
     const tutorRepository = getRepository(Tutor);
@@ -25,7 +29,7 @@ export class PacienteService {
       id: proximoId,
       nome,
       especie,
-      tutor,
+      tutor : tutor,
     });
 
     await pacienteRepository.save(novoPaciente);

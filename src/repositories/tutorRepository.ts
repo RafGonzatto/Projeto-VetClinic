@@ -3,6 +3,14 @@ import { getRepository } from 'typeorm';
 import { Tutor } from '../models/tutorModel';
 
 export class TutorRepository {
+  static async buscarTutorPorEmail(email: string): Promise<Tutor | null> {
+    try {
+      const tutor = await Tutor.findOne({ where: { email: email } });
+      return tutor ;
+  } catch (error) {
+   throw new Error("Erro ao criar tutor")
+  }
+}
   static async criarTutor(nome: string, email: string, telefone: string): Promise<Tutor> {
     const tutorRepository = getRepository(Tutor);
     const proximoId = await this.proximoId();
