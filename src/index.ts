@@ -1,20 +1,22 @@
 import express, { Request, Response, NextFunction } from 'express'
+import cors from 'cors'
 import routes from './routes/routes'
-import sequelize from '../database/conexao'
+import conexao from '../database/conexao'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJSDoc from 'swagger-jsdoc'
-import definePacienteModel from './models/pacienteModel'
-import defineTutorModel from './models/tutorModel'
 
 const app = express()
 const PORT = 3000
+
+app.use(cors())
+app.use(express.json())
+
 app.use((req: Request, res: Response, next: NextFunction) => {
-  req.context = {
-    db: sequelize,
+  ;(req as any).context = {
+    db: conexao,
   }
   next()
 })
-app.use(express.json())
 
 const swaggerOptions = {
   swaggerDefinition: {
@@ -22,28 +24,22 @@ const swaggerOptions = {
     info: {
       title: 'API da VetClinic',
       version: '1.0.0',
-      description: 'Documentação da API da VetClinic',
+      description: 'Documentação da API do Projeto VetClinic',
     },
   },
-  apis: ['./routes/routes.ts'],
+  apis: [`${__dirname}/routes/routes.ts`],
 }
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
-app.use('/api', routes)
-
-const Paciente = definePacienteModel(sequelize)
-
-const Tutor = defineTutorModel(sequelize)
-
-sequelize
-  .sync()
+app.use('/', routes)
+conexao
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Servidor rodando na porta ${PORT}`)
     })
   })
   .catch((error: any) => {
-    console.error('Erro ao sincronizar modelos com o banco de dados:', error)
+    console.error('Erro ao conectar ao banco de dados:', error)
   })

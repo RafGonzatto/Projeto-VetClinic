@@ -1,4 +1,4 @@
 *.js
 node_modules/
 .env
-db_development.sqlite
+database_development.sqlite

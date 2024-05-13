@@ -1,66 +1,98 @@
 import { Request, Response } from 'express'
-import { PacienteInstance } from '../models/pacienteModel'
-import definePacienteModel from '../models/pacienteModel'
+import { PacienteService } from '../services/pacienteService'
 
 class PacienteController {
-  static async criarPaciente(req: Request, res: Response) {
+  static async buscarPacientesTutor(req: Request, res: Response) {
     try {
-      const PacienteModel = definePacienteModel(req.context.db)
-      const maxIdPaciente = (await PacienteModel.max('id')) as number | null
-      const proximoId = maxIdPaciente !== null ? maxIdPaciente + 1 : 1
-      const tutorId = parseInt(req.params.tutorId)
-      if (!req.body.nome || !req.body.especie) {
-        return res
-          .status(400)
-          .json({ message: 'O nome e a espécie do paciente são obrigatórios' })
-      }
-
-      const novoPaciente = await PacienteModel.create({
-        id: proximoId,
-        nome: req.body.nome,
-        especie: req.body.especie,
-        tutorId: tutorId,
-      })
-      res.status(200).json(novoPaciente)
+      const tutorId = Number(req.params.tutorId)
+      const pacientes = await PacienteService.buscarPacientesPorTutor(tutorId)
+      return res.json(pacientes)
     } catch (error) {
-      console.error('Erro ao criar paciente:', error)
-      res.status(500).json({ message: 'Erro ao criar paciente' })
+      console.error('Erro ao buscar pacientes do tutor:', error)
+      return res
+        .status(500)
+        .json({ error: 'Erro ao buscar pacientes do tutor' })
     }
   }
 
-  static async atualizarPaciente(req: Request, res: Response) {
-    const pacienteId = req.params.id
+  static async buscarPaciente(req: Request, res: Response) {
     try {
-      const PacienteModel = definePacienteModel(req.context.db)
-      const [updated] = await PacienteModel.update(req.body, {
-        where: { id: pacienteId },
-      })
-
-      if (updated) {
-        const updatedPaciente = await PacienteModel.findOne({
-          where: { id: pacienteId },
-        })
-        return res.status(200).json(updatedPaciente)
-      }
-      throw new Error('Paciente não encontrado')
+      const pacienteId = parseInt(req.params.pacienteId)
+      const tutorId = parseInt(req.params.tutorId)
+      const pacientes = await PacienteService.buscarPaciente(
+        pacienteId,
+        tutorId,
+      )
+      return res.json(pacientes)
     } catch (error) {
-      console.error('Erro ao atualizar paciente:', error)
-      res.status(500).json({ error: 'Erro ao atualizar paciente' })
+      console.error('Erro ao buscar pacientes do tutor:', error)
+      return res
+        .status(500)
+        .json({ error: 'Erro ao buscar pacientes do tutor' })
+    }
+  }
+  static async listarPacientes(req: Request, res: Response) {
+    try {
+      const pacientes = await PacienteService.listarPacientes()
+      return res.json(pacientes)
+    } catch (error) {
+      console.error('Erro ao buscar pacientes:', error)
+      return res.status(500).json({ error: 'Erro ao buscar pacientes' })
+    }
+  }
+  static async criarPaciente(req: Request, res: Response) {
+    try {
+      const tutorId = parseInt(req.params.tutorId)
+      const { nome, especie, dataNascimento } = req.body
+      const paciente = await PacienteService.criarPaciente(
+        nome,
+        especie,
+        dataNascimento,
+        tutorId,
+      )
+      return res.status(200).json(paciente)
+    } catch (error: any) {
+      if (error && error.status) {
+        return res.status(error.status).json({ message: error.message })
+      } else {
+        console.error('Erro ao criar paciente:', error)
+        return res.status(500).json({ error: 'Erro ao criar paciente' })
+      }
+    }
+  }
+  static async atualizarPaciente(req: Request, res: Response) {
+    try {
+      const pacienteId = parseInt(req.params.pacienteId)
+      const tutorId = parseInt(req.params.tutorId)
+      const { nome, especie, dataNascimento } = req.body
+      const pacienteAtualizado = await PacienteService.atualizarPaciente(
+        pacienteId,
+        tutorId,
+        nome,
+        especie,
+        dataNascimento,
+      )
+      return res.status(200).json(pacienteAtualizado)
+    } catch (error: any) {
+      if (error && error.status) {
+        return res.status(error.status).json({ message: error.message })
+      } else {
+        console.error('Erro ao atualizar paciente:', error)
+        return res.status(500).json({ error: 'Erro ao atualizar paciente' })
+      }
     }
   }
 
   static async deletarPaciente(req: Request, res: Response) {
-    const pacienteId = req.params.id
+    const pacienteId = parseInt(req.params.pacienteId)
+    const tutorId = parseInt(req.params.tutorId)
     try {
-      const PacienteModel = definePacienteModel(req.context.db)
-      const deleted = await PacienteModel.destroy({
-        where: { id: pacienteId },
-      })
-
-      if (deleted) {
+      const result = await PacienteService.deletarPaciente(pacienteId, tutorId)
+      if (result === 1) {
         return res.status(204).send()
+      } else {
+        throw new Error('Paciente não encontrado')
       }
-      throw new Error('Paciente não encontrado')
     } catch (error) {
       console.error('Erro ao deletar paciente:', error)
       res.status(500).json({ error: 'Erro ao deletar paciente' })
