@@ -53,9 +53,12 @@ E adicione ao Body - raw o seguinte JSON:
 
 {
  "nome": "Fidorento",
- "especie": "Cachorro dos Lagos"
+ "especie": "Cachorro dos Lagos",
+ "dataNascimento": "30-10-2023"
 }
 ```
+![Imagem](src/images/api.png)
+
 
 ## Contribuição :tiger:
 
