@@ -27,6 +27,19 @@ router.get('/tutor', TutorController.listarTutores)
 
 /**
  * @swagger
+ * /tutor/pacientes:
+ *   get:
+ *     summary: Lista todos os tutores cadastrados junto com seus pacientes.
+ *     tags: [Tutores]
+ *     responses:
+ *       '200':
+ *         description: Retorna uma lista de todos os tutores e pacientes.
+ *       '500':
+ *         description: Erro ao listar tutores.
+ */
+router.get('/tutor/pacientes', TutorController.listarTutoresPacientes)
+/**
+ * @swagger
  * /tutor:
  *   post:
  *     summary: Cria um novo tutor
@@ -215,6 +228,9 @@ router.get('/paciente', PacienteController.listarPacientes)
  *                 type: string
  *               especie:
  *                 type: string
+ *               dataNascimento:
+ *                 type: string
+ *                 example: "dd-mm-yyyy"
  *     responses:
  *       '200':
  *         description: Paciente criado com sucesso
@@ -255,6 +271,9 @@ router.post('/paciente/:tutorId', PacienteController.criarPaciente)
  *                 type: string
  *               especie:
  *                 type: string
+ *               dataNascimento:
+ *                 type: string
+ *                 example: "dd-mm-yyyy"
  *     responses:
  *       '200':
  *         description: Paciente atualizado com sucesso
@@ -262,9 +281,12 @@ router.post('/paciente/:tutorId', PacienteController.criarPaciente)
  *         description: O nome e a espécie do paciente são obrigatórios
  *       '404':
  *         description: Paciente ou tutor não encontrado
+ *       '422':
+ *         description: Formato de data inválido
  *       '500':
  *         description: Erro ao atualizar paciente
  */
+
 router.put(
   '/paciente/:pacienteId/tutor/:tutorId',
   PacienteController.atualizarPaciente,

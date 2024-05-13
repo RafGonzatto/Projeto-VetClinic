@@ -43,10 +43,11 @@ class PacienteController {
   static async criarPaciente(req: Request, res: Response) {
     try {
       const tutorId = parseInt(req.params.tutorId)
-      const { nome, especie } = req.body
+      const { nome, especie, dataNascimento } = req.body
       const paciente = await PacienteService.criarPaciente(
         nome,
         especie,
+        dataNascimento,
         tutorId,
       )
       return res.status(200).json(paciente)
@@ -63,12 +64,13 @@ class PacienteController {
     try {
       const pacienteId = parseInt(req.params.pacienteId)
       const tutorId = parseInt(req.params.tutorId)
-      const { nome, especie } = req.body
+      const { nome, especie, dataNascimento } = req.body
       const pacienteAtualizado = await PacienteService.atualizarPaciente(
         pacienteId,
         tutorId,
         nome,
         especie,
+        dataNascimento,
       )
       return res.status(200).json(pacienteAtualizado)
     } catch (error: any) {

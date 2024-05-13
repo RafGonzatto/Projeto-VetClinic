@@ -19,6 +19,9 @@ export class Paciente extends BaseEntity {
   @Column({ nullable: false })
   especie?: string
 
+  @Column({ nullable: false })
+  dataNascimento?: string
+
   @ManyToOne(() => Tutor, { nullable: false })
   @JoinColumn({ name: 'tutorId' })
   tutor?: Tutor
@@ -28,6 +31,7 @@ export class Paciente extends BaseEntity {
     this.id = 1
     this.nome = ''
     this.especie = ''
+    this.dataNascimento = ''
     this.tutor = new Tutor()
   }
 }

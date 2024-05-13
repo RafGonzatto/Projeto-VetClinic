@@ -8,6 +8,41 @@ export class TutorService {
     const tutorRepository = getRepository(Tutor)
     return await tutorRepository.find()
   }
+  static async listarTutoresPacientes() {
+    const tutorRepository = getRepository(Tutor)
+    const tutores = await tutorRepository.find({ relations: ['pacientes'] })
+
+    const tutoresComPacientes = tutores.map((tutor) => {
+      let pacientes: {
+        id: number | undefined
+        nome: string | undefined
+        especie: string | undefined
+        dataNascimento: string | undefined
+      }[] = []
+      if (tutor.pacientes) {
+        pacientes = tutor.pacientes.map((paciente) => {
+          return {
+            id: paciente.id,
+            nome: paciente.nome,
+            especie: paciente.especie,
+            dataNascimento: paciente.dataNascimento,
+          }
+        })
+      }
+      return {
+        tutor: {
+          id: tutor.id,
+          nome: tutor.nome,
+          email: tutor.email,
+          telefone: tutor.telefone,
+        },
+        pacientes,
+      }
+    })
+
+    return tutoresComPacientes
+  }
+
   static async criarTutor(
     nome: string,
     email: string,

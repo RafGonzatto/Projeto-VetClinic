@@ -1,11 +1,11 @@
 declare namespace Express {
   interface Request {
     context: {
-      db: Connection; 
-    };
+      db: Connection
+    }
   }
 }
 
 interface CustomError extends Error {
-  status?: number;
+  status?: number
 }

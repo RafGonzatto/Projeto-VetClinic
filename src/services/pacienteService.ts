@@ -2,6 +2,7 @@ import { getRepository } from 'typeorm'
 import { Paciente } from '../models/pacienteModel'
 import { Tutor } from '../models/tutorModel'
 import { PacienteRepository } from '../repositories/pacienteRepository'
+import { RepositorioService } from './RepositorioService'
 
 export class PacienteService {
   static async buscarPacientesPorTutor(tutorId: number): Promise<Paciente[]> {
@@ -28,14 +29,15 @@ export class PacienteService {
   static async criarPaciente(
     nome: string,
     especie: string,
+    dataNascimento: string,
     tutorId: number,
   ): Promise<Paciente> {
     const pacienteRepository = getRepository(Paciente)
     const tutorRepository = getRepository(Tutor)
 
-    if (!nome || !especie) {
+    if (!nome || !especie || !dataNascimento) {
       const error: CustomError = new Error(
-        'O nome e a espécie do paciente são obrigatórios',
+        'O nome, espécie e data de nascimento do paciente são obrigatórios',
       )
       error.status = 400
       throw error
@@ -46,12 +48,19 @@ export class PacienteService {
       error.status = 404
       throw error
     }
-
+    if (!RepositorioService.validarDataNascimento(dataNascimento)) {
+      const error: CustomError = new Error(
+        'A data de nascimento do paciente não está em um formato válido. Use o formato "dd-mm-aaaa".',
+      )
+      error.status = 422
+      throw error
+    }
     const proximoId = await PacienteRepository.proximoId()
     const novoPaciente = pacienteRepository.create({
       id: proximoId,
       nome,
       especie,
+      dataNascimento,
       tutor: tutor,
     })
 
@@ -64,12 +73,13 @@ export class PacienteService {
     tutorId: number,
     nome: string,
     especie: string,
+    dataNascimento: string,
   ): Promise<Paciente> {
     const pacienteRepository = getRepository(Paciente)
 
-    if (!nome || !especie) {
+    if (!nome || !especie || !dataNascimento) {
       const error: CustomError = new Error(
-        'O nome e a espécie do paciente são obrigatórios',
+        'O nome, espécie e data de nascimento do paciente são obrigatórios',
       )
       error.status = 400
       throw error
@@ -84,9 +94,16 @@ export class PacienteService {
       error.status = 404
       throw error
     }
-
+    if (!RepositorioService.validarDataNascimento(dataNascimento)) {
+      const error: CustomError = new Error(
+        'A data de nascimento do paciente não está em um formato válido. Use o formato "dd-mm-aaaa".',
+      )
+      error.status = 422
+      throw error
+    }
     pacienteExistente.nome = nome
     pacienteExistente.especie = especie
+    pacienteExistente.dataNascimento = dataNascimento
 
     const pacienteAtualizado = await pacienteRepository.save(pacienteExistente)
 
