@@ -1,4 +1,4 @@
 *.js
 node_modules/
 .env
-database_development.sqlite
+vetclinic.sqlite
