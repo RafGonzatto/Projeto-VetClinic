@@ -7,31 +7,23 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 import { Tutor } from './tutorModel'
+import { IPaciente } from '../interfaces/pacienteInterface'
 
 @Entity('Paciente')
-export class Paciente extends BaseEntity {
+export class Paciente extends BaseEntity implements IPaciente {
   @PrimaryGeneratedColumn()
-  id?: number
+  id!: number
 
   @Column({ nullable: false })
-  nome?: string
+  nome!: string
 
   @Column({ nullable: false })
-  especie?: string
+  especie!: string
 
   @Column({ nullable: false })
-  dataNascimento?: string
+  dataNascimento!: string
 
   @ManyToOne(() => Tutor, { nullable: false })
   @JoinColumn({ name: 'tutorId' })
-  tutor?: Tutor
-
-  constructor() {
-    super()
-    this.id = 1
-    this.nome = ''
-    this.especie = ''
-    this.dataNascimento = ''
-    this.tutor = new Tutor()
-  }
+  tutor!: Tutor
 }

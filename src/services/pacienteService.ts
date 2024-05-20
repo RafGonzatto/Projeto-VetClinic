@@ -1,125 +1,115 @@
-import { getRepository } from 'typeorm'
 import { Paciente } from '../models/pacienteModel'
-import { Tutor } from '../models/tutorModel'
+import { IPaciente } from '../interfaces/pacienteInterface'
 import { PacienteRepository } from '../repositories/pacienteRepository'
-import { RepositorioService } from './RepositorioService'
+import { TutorRepository } from '../repositories/tutorRepository'
+import { pacienteSchema } from '../validators/pacienteValidator'
+import createError from 'http-errors'
 
 export class PacienteService {
-  static async buscarPacientesPorTutor(tutorId: number): Promise<Paciente[]> {
-    const pacienteRepository = getRepository(Paciente)
-    return await pacienteRepository.find({
-      where: { tutor: { id: tutorId } },
-      relations: ['tutor'],
-    })
+  private repository: PacienteRepository
+  private tutorRepository: TutorRepository
+
+  constructor() {
+    this.repository = new PacienteRepository()
+    this.tutorRepository = new TutorRepository()
   }
-  static async buscarPaciente(
-    pacienteId: number,
-    tutorId: number,
-  ): Promise<Paciente[]> {
-    const pacienteRepository = getRepository(Paciente)
-    return await pacienteRepository.find({
-      where: { id: pacienteId, tutor: { id: tutorId } },
-      relations: ['tutor'],
-    })
-  }
-  static async listarPacientes(): Promise<Paciente[]> {
-    const pacienteRepository = getRepository(Paciente)
-    return await pacienteRepository.find({ relations: ['tutor'] })
-  }
-  static async criarPaciente(
+
+  async criarPaciente(
     nome: string,
     especie: string,
     dataNascimento: string,
     tutorId: number,
   ): Promise<Paciente> {
-    const pacienteRepository = getRepository(Paciente)
-    const tutorRepository = getRepository(Tutor)
-
-    if (!nome || !especie || !dataNascimento) {
-      const error: CustomError = new Error(
-        'O nome, espécie e data de nascimento do paciente são obrigatórios',
-      )
-      error.status = 400
-      throw error
-    }
-    const tutor = await tutorRepository.findOne({ where: { id: tutorId } })
-    if (!tutor) {
-      const error: CustomError = new Error('Tutor não encontrado')
-      error.status = 404
-      throw error
-    }
-    if (!RepositorioService.validarDataNascimento(dataNascimento)) {
-      const error: CustomError = new Error(
-        'A data de nascimento do paciente não está em um formato válido. Use o formato "dd-mm-aaaa".',
-      )
-      error.status = 422
-      throw error
-    }
-    const proximoId = await PacienteRepository.proximoId()
-    const novoPaciente = pacienteRepository.create({
-      id: proximoId,
+    let idValidator = 1
+    let validation = pacienteSchema.safeParse({
+      id: idValidator,
       nome,
       especie,
       dataNascimento,
-      tutor: tutor,
+      tutorId,
     })
-
-    await pacienteRepository.save(novoPaciente)
-
+    if (!validation.success) {
+      const errorMessages = validation.error.errors.map(
+        (error) => error.message,
+      )
+      const errorMessage = errorMessages.join(', ')
+      throw createError(400, errorMessage)
+    }
+    let tutor = await this.tutorRepository.buscarTutorPorIdSemRelations(tutorId)
+    if (!tutor) {
+      throw createError(404, 'Tutor não encontrado')
+    }
+    let novoPaciente = this.repository.criarPaciente(
+      nome,
+      especie,
+      dataNascimento,
+      tutor,
+    )
     return novoPaciente
   }
-  static async atualizarPaciente(
+  async buscarPacientesTutor(tutorId: number): Promise<IPaciente[]> {
+    let pacientes = await this.repository.buscarPacientesTutor(tutorId)
+    return pacientes
+  }
+
+  async buscarPaciente(
+    pacienteId: number,
+    tutorId: number,
+  ): Promise<IPaciente> {
+    let paciente = await this.repository.buscarPaciente(pacienteId, tutorId)
+    if (!paciente) {
+      throw createError(404, 'Paciente não encontrado')
+    }
+    return paciente
+  }
+  async listarPacientes(): Promise<IPaciente[]> {
+    let pacientes = await this.repository.listarPacientes()
+    return pacientes
+  }
+
+  async atualizarPaciente(
     pacienteId: number,
     tutorId: number,
     nome: string,
     especie: string,
     dataNascimento: string,
-  ): Promise<Paciente> {
-    const pacienteRepository = getRepository(Paciente)
-
-    if (!nome || !especie || !dataNascimento) {
-      const error: CustomError = new Error(
-        'O nome, espécie e data de nascimento do paciente são obrigatórios',
-      )
-      error.status = 400
-      throw error
-    }
-
-    const pacienteExistente = await pacienteRepository.findOne({
-      where: { id: pacienteId, tutor: { id: tutorId } },
-      relations: ['tutor'],
+  ): Promise<IPaciente> {
+    let validation = pacienteSchema.safeParse({
+      id: pacienteId,
+      nome,
+      especie,
+      dataNascimento,
+      tutorId,
     })
-    if (!pacienteExistente) {
-      const error: CustomError = new Error('Paciente não encontrado')
-      error.status = 404
-      throw error
-    }
-    if (!RepositorioService.validarDataNascimento(dataNascimento)) {
-      const error: CustomError = new Error(
-        'A data de nascimento do paciente não está em um formato válido. Use o formato "dd-mm-aaaa".',
+    if (!validation.success) {
+      const errorMessages = validation.error.errors.map(
+        (error) => error.message,
       )
-      error.status = 422
-      throw error
+      const errorMessage = errorMessages.join(', ')
+      throw createError(400, errorMessage)
+    }
+
+    let pacienteExistente = await this.repository.buscarPaciente(
+      pacienteId,
+      tutorId,
+    )
+    if (!pacienteExistente) {
+      throw createError(404, 'Paciente não encontrado')
+    }
+    let tutor = await this.tutorRepository.buscarTutorPorIdSemRelations(tutorId)
+    if (!tutor) {
+      throw createError(404, 'Tutor não encontrado')
     }
     pacienteExistente.nome = nome
     pacienteExistente.especie = especie
     pacienteExistente.dataNascimento = dataNascimento
-
-    const pacienteAtualizado = await pacienteRepository.save(pacienteExistente)
+    let pacienteAtualizado =
+      this.repository.atualizarPaciente(pacienteExistente)
 
     return pacienteAtualizado
   }
 
-  static async deletarPaciente(
-    pacienteId: number,
-    tutorId: number,
-  ): Promise<number> {
-    const pacienteRepository = getRepository(Paciente)
-
-    const deleted = await pacienteRepository.delete({
-      id: pacienteId,
-      tutor: { id: tutorId },
-    })
-    return deleted.affected || 0
+  async deletarPaciente(pacienteId: number, tutorId: number): Promise<void> {
+    await this.repository.deletarPaciente(pacienteId, tutorId)
   }
 }
