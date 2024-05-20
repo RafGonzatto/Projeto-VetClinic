@@ -1,17 +1,24 @@
-import { getRepository } from 'typeorm'
-import { Tutor } from '../models/tutorModel'
+import { ITutor } from '../interfaces/tutorInterface'
 import { TutorRepository } from '../repositories/tutorRepository'
-import { Paciente } from '../models/pacienteModel'
+import { PacienteRepository } from '../repositories/pacienteRepository'
+import { tutorSchema } from '../validators/tutorValidator'
+import createError from 'http-errors'
 
 export class TutorService {
-  static async listarTutores() {
-    const tutorRepository = getRepository(Tutor)
-    return await tutorRepository.find()
-  }
-  static async listarTutoresPacientes() {
-    const tutorRepository = getRepository(Tutor)
-    const tutores = await tutorRepository.find({ relations: ['pacientes'] })
+  private repository: TutorRepository
+  private pacienteRepository: PacienteRepository
 
+  constructor() {
+    this.repository = new TutorRepository()
+    this.pacienteRepository = new PacienteRepository()
+  }
+
+  async listarTutores() {
+    let tutores = await this.repository.listarTutores()
+    return tutores
+  }
+  async listarTutoresPacientes() {
+    let tutores = await this.repository.listarTutoresPacientes()
     const tutoresComPacientes = tutores.map((tutor) => {
       let pacientes: {
         id: number | undefined
@@ -43,74 +50,62 @@ export class TutorService {
     return tutoresComPacientes
   }
 
-  static async criarTutor(
+  async criarTutor(
     nome: string,
     email: string,
     telefone: string,
-  ): Promise<Tutor> {
-    if (!nome || !email || !telefone) {
-      const error: CustomError = new Error(
-        'Nome, email e telefone são obrigatórios',
+  ): Promise<ITutor> {
+    const validation = tutorSchema.safeParse({ nome, email, telefone })
+    if (!validation.success) {
+      const errorMessages = validation.error.errors.map(
+        (error) => error.message,
       )
-      error.status = 400
-      throw error
+      const errorMessage = errorMessages.join(', ')
+      throw createError(400, errorMessage)
     }
-    const tutorExistente = await TutorRepository.buscarTutorPorEmail(email)
+    const tutorExistente = await this.repository.buscarTutorPorEmail(email)
     if (tutorExistente) {
-      const error: CustomError = new Error('Este email já foi cadastrado')
-      error.status = 409
-      throw error
+      throw createError(409, 'Este email já foi cadastrado')
     }
-    return await TutorRepository.criarTutor(nome, email, telefone)
+    return await this.repository.criarTutor(nome, email, telefone)
   }
-  static async atualizarTutor(
+
+  async atualizarTutor(
     id: number,
     nome: string,
     email: string,
     telefone: string,
-  ): Promise<Tutor> {
-    const tutorExistente = await TutorRepository.buscarTutorPorId(id)
-
+  ): Promise<ITutor> {
+    const tutorExistente = await this.repository.buscarTutorPorId(id)
     if (!tutorExistente) {
-      const error: CustomError = new Error('Tutor não encontrado')
-      error.status = 404
-      throw error
+      throw createError(404, 'Tutor não encontrado')
     }
-
-    if (!nome || !email || !telefone) {
-      const error: CustomError = new Error(
-        'Nome, email e telefone são obrigatórios',
+    const validation = tutorSchema.safeParse({ id, nome, email, telefone })
+    if (!validation.success) {
+      const errorMessages = validation.error.errors.map(
+        (error) => error.message,
       )
-      error.status = 400
-      throw error
+      const errorMessage = errorMessages.join(', ')
+      throw createError(400, errorMessage)
     }
-
     tutorExistente.nome = nome
     tutorExistente.email = email
     tutorExistente.telefone = telefone
 
-    const tutorAtualizado = await TutorRepository.atualizarTutor(tutorExistente)
+    const tutorAtualizado = await this.repository.atualizarTutor(tutorExistente)
 
     return tutorAtualizado
   }
-  static async deletarTutor(id: number): Promise<void> {
-    const tutorRepository = getRepository(Tutor)
-    const pacienteRepository = getRepository(Paciente)
-    const tutorExistente = await tutorRepository.findOne({
-      where: { id },
-      relations: ['pacientes'],
-    })
+  async deletarTutor(id: number): Promise<void> {
+    const tutorExistente = await this.repository.buscarTutorPorId(id)
 
     if (!tutorExistente) {
-      const error: CustomError = new Error('Tutor não encontrado')
-      error.status = 404
-      throw error
+      throw createError(404, 'Tutor não encontrado')
     }
 
     if (tutorExistente.pacientes && tutorExistente.pacientes.length > 0) {
-      await pacienteRepository.remove(tutorExistente.pacientes)
+      this.pacienteRepository.deletarPacientes(tutorExistente.pacientes)
     }
-
-    await tutorRepository.remove(tutorExistente)
+    await this.repository.deletarTutor(tutorExistente)
   }
 }

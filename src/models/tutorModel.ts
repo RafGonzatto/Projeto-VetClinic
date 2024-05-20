@@ -6,29 +6,22 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 import { Paciente } from './pacienteModel'
+import { ITutor } from '../interfaces/tutorInterface'
 
 @Entity('Tutor')
-export class Tutor extends BaseEntity {
+export class Tutor extends BaseEntity implements ITutor {
   @PrimaryGeneratedColumn()
-  id?: number
+  id!: number
 
   @Column({ nullable: false })
-  nome?: string
+  nome!: string
 
   @Column({ nullable: false, unique: true })
-  email?: string
+  email!: string
 
   @Column({ nullable: false })
-  telefone?: string
+  telefone!: string
 
   @OneToMany(() => Paciente, (paciente) => paciente.tutor)
-  pacientes?: Paciente[]
-
-  constructor() {
-    super()
-    this.id = 1
-    this.nome = ''
-    this.email = ''
-    this.telefone = ''
-  }
+  pacientes!: Paciente[]
 }

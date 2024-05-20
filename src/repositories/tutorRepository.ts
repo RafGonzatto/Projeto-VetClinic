@@ -1,55 +1,57 @@
-// TutorRepository.ts
-import { getRepository } from 'typeorm'
+import { Repository } from 'typeorm'
+import { ITutor } from '../interfaces/tutorInterface'
 import { Tutor } from '../models/tutorModel'
+import AppDataSource from '../database/conexao'
 
 export class TutorRepository {
-  static async buscarTutorPorEmail(email: string): Promise<Tutor | null> {
-    try {
-      const tutor = await Tutor.findOne({ where: { email: email } })
-      return tutor
-    } catch (error) {
-      throw new Error('Erro ao criar tutor')
-    }
+  private repository: Repository<Tutor>
+
+  constructor() {
+    this.repository = AppDataSource.getRepository(Tutor)
   }
-  static async criarTutor(
+
+  async listarTutores() {
+    return this.repository.find()
+  }
+
+  async listarTutoresPacientes() {
+    return this.repository.find({ relations: ['pacientes'] })
+  }
+
+  async buscarTutorPorEmail(email: string): Promise<ITutor | null> {
+    let tutor = await this.repository.findOne({ where: { email } })
+    return tutor
+  }
+
+  async criarTutor(
     nome: string,
     email: string,
     telefone: string,
-  ): Promise<Tutor> {
-    const tutorRepository = getRepository(Tutor)
-    const proximoId = await this.proximoId()
-    const novoTutor = tutorRepository.create({
-      id: proximoId,
-      nome,
-      email,
-      telefone,
-    })
-    await tutorRepository.save(novoTutor)
+  ): Promise<ITutor> {
+    let novoTutor = this.repository.create({ nome, email, telefone })
+    await this.repository.save(novoTutor)
     return novoTutor
   }
 
-  private static async proximoId(): Promise<number> {
-    const tutorRepository = getRepository(Tutor)
-    const maxId = await tutorRepository
-      .createQueryBuilder('tutor')
-      .select('MAX(tutor.id)', 'maxId')
-      .getRawOne()
-
-    return maxId && maxId.maxId != null ? parseInt(maxId.maxId) + 1 : 1
+  async buscarTutorPorId(id: number): Promise<Tutor | null> {
+    let tutor = await this.repository.findOne({
+      where: { id },
+      relations: ['pacientes'],
+    })
+    return tutor || null
   }
-
-  static async buscarTutorPorId(id: number): Promise<Tutor | null> {
-    const tutorRepository = getRepository(Tutor)
-    const tutor = await tutorRepository.findOne({ where: { id } })
+  async buscarTutorPorIdSemRelations(id: number): Promise<Tutor | null> {
+    let tutor = await this.repository.findOne({
+      where: { id },
+    })
     return tutor || null
   }
 
-  static async atualizarTutor(tutor: Tutor): Promise<Tutor> {
-    const tutorRepository = getRepository(Tutor)
-    return await tutorRepository.save(tutor)
+  async atualizarTutor(tutor: ITutor): Promise<ITutor> {
+    return await this.repository.save(tutor)
   }
 
-  static async deletarTutor(id: number): Promise<void> {
-    await TutorRepository.deletarTutor(id)
+  async deletarTutor(tutorExistente: Tutor): Promise<void> {
+    await this.repository.remove(tutorExistente)
   }
 }
