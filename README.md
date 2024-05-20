@@ -24,7 +24,7 @@ O Projeto VetClinic é uma aplicação para gerenciamento de tutores e pacientes
    Antes de iniciar o projeto, certifique-se de instalar todas as dependências necessárias. Você pode fazer isso executando:
 
    ```bash
-   npm install typescript@^5.4.5 express@^4.19.2 typeorm@^0.3.20 prettier@^3.2.5 swagger-jsdoc@^6.2.8 swagger-ui-express@^5.0.0 nodemon@^3.1.0 concurrently@^8.2.2
+   npm install
    ```
 
 2. **Configuração do Banco de Dados:**
