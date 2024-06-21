@@ -19,7 +19,7 @@ export class TutorRepository {
   }
 
   async buscarTutorPorEmail(email: string): Promise<ITutor | null> {
-    let tutor = await this.repository.findOne({ where: { email } })
+    const tutor = await this.repository.findOne({ where: { email } })
     return tutor
   }
 
@@ -28,20 +28,20 @@ export class TutorRepository {
     email: string,
     telefone: string,
   ): Promise<ITutor> {
-    let novoTutor = this.repository.create({ nome, email, telefone })
+    const novoTutor = this.repository.create({ nome, email, telefone })
     await this.repository.save(novoTutor)
     return novoTutor
   }
 
   async buscarTutorPorId(id: number): Promise<Tutor | null> {
-    let tutor = await this.repository.findOne({
+    const tutor = await this.repository.findOne({
       where: { id },
       relations: ['pacientes'],
     })
     return tutor || null
   }
   async buscarTutorPorIdSemRelations(id: number): Promise<Tutor | null> {
-    let tutor = await this.repository.findOne({
+    const tutor = await this.repository.findOne({
       where: { id },
     })
     return tutor || null

@@ -20,26 +20,12 @@ export class PacienteService {
     dataNascimento: string,
     tutorId: number,
   ): Promise<Paciente> {
-    let idValidator = 1
-    let validation = pacienteSchema.safeParse({
-      id: idValidator,
-      nome,
-      especie,
-      dataNascimento,
-      tutorId,
-    })
-    if (!validation.success) {
-      const errorMessages = validation.error.errors.map(
-        (error) => error.message,
-      )
-      const errorMessage = errorMessages.join(', ')
-      throw createError(400, errorMessage)
-    }
-    let tutor = await this.tutorRepository.buscarTutorPorIdSemRelations(tutorId)
+    const tutor =
+      await this.tutorRepository.buscarTutorPorIdSemRelations(tutorId)
     if (!tutor) {
       throw createError(404, 'Tutor não encontrado')
     }
-    let novoPaciente = this.repository.criarPaciente(
+    const novoPaciente = this.repository.criarPaciente(
       nome,
       especie,
       dataNascimento,
@@ -48,7 +34,7 @@ export class PacienteService {
     return novoPaciente
   }
   async buscarPacientesTutor(tutorId: number): Promise<IPaciente[]> {
-    let pacientes = await this.repository.buscarPacientesTutor(tutorId)
+    const pacientes = await this.repository.buscarPacientesTutor(tutorId)
     return pacientes
   }
 
@@ -56,14 +42,14 @@ export class PacienteService {
     pacienteId: number,
     tutorId: number,
   ): Promise<IPaciente> {
-    let paciente = await this.repository.buscarPaciente(pacienteId, tutorId)
+    const paciente = await this.repository.buscarPaciente(pacienteId, tutorId)
     if (!paciente) {
       throw createError(404, 'Paciente não encontrado')
     }
     return paciente
   }
   async listarPacientes(): Promise<IPaciente[]> {
-    let pacientes = await this.repository.listarPacientes()
+    const pacientes = await this.repository.listarPacientes()
     return pacientes
   }
 
@@ -74,36 +60,22 @@ export class PacienteService {
     especie: string,
     dataNascimento: string,
   ): Promise<IPaciente> {
-    let validation = pacienteSchema.safeParse({
-      id: pacienteId,
-      nome,
-      especie,
-      dataNascimento,
-      tutorId,
-    })
-    if (!validation.success) {
-      const errorMessages = validation.error.errors.map(
-        (error) => error.message,
-      )
-      const errorMessage = errorMessages.join(', ')
-      throw createError(400, errorMessage)
-    }
-
-    let pacienteExistente = await this.repository.buscarPaciente(
+    const pacienteExistente = await this.repository.buscarPaciente(
       pacienteId,
       tutorId,
     )
     if (!pacienteExistente) {
       throw createError(404, 'Paciente não encontrado')
     }
-    let tutor = await this.tutorRepository.buscarTutorPorIdSemRelations(tutorId)
+    const tutor =
+      await this.tutorRepository.buscarTutorPorIdSemRelations(tutorId)
     if (!tutor) {
       throw createError(404, 'Tutor não encontrado')
     }
     pacienteExistente.nome = nome
     pacienteExistente.especie = especie
     pacienteExistente.dataNascimento = dataNascimento
-    let pacienteAtualizado =
+    const pacienteAtualizado =
       this.repository.atualizarPaciente(pacienteExistente)
 
     return pacienteAtualizado

@@ -11,7 +11,7 @@ export class PacienteRepository {
     this.repository = AppDataSource.getRepository(Paciente)
   }
   async buscarPaciente(pacienteId: number, tutorId: number) {
-    let paciente = await this.repository.findOne({
+    const paciente = await this.repository.findOne({
       where: { id: pacienteId, tutor: { id: tutorId } },
       relations: ['tutor'],
     })
@@ -34,7 +34,7 @@ export class PacienteRepository {
     dataNascimento: string,
     tutor: ITutor,
   ) {
-    let paciente = this.repository.create({
+    const paciente = this.repository.create({
       nome,
       especie,
       dataNascimento,

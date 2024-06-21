@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import PacienteController from '../controllers/pacienteController'
+import { validationPacienteMiddleware } from '../middlewares/validationPacienteMiddleware';
 
 const router = Router()
 const pacienteController = new PacienteController()
@@ -124,7 +125,7 @@ router.get(
  *         description: Erro ao criar paciente
  */
 router.post(
-  '/paciente/:tutorId',
+  '/paciente/:tutorId', validationPacienteMiddleware,
   pacienteController.criarPaciente.bind(pacienteController),
 )
 
@@ -175,7 +176,7 @@ router.post(
  */
 
 router.put(
-  '/paciente/:pacienteId/tutor/:tutorId',
+  '/paciente/:pacienteId/tutor/:tutorId', validationPacienteMiddleware,
   pacienteController.atualizarPaciente.bind(pacienteController),
 )
 

@@ -14,11 +14,11 @@ export class TutorService {
   }
 
   async listarTutores() {
-    let tutores = await this.repository.listarTutores()
+    const tutores = await this.repository.listarTutores()
     return tutores
   }
   async listarTutoresPacientes() {
-    let tutores = await this.repository.listarTutoresPacientes()
+    const tutores = await this.repository.listarTutoresPacientes()
     const tutoresComPacientes = tutores.map((tutor) => {
       let pacientes: {
         id: number | undefined
@@ -55,14 +55,6 @@ export class TutorService {
     email: string,
     telefone: string,
   ): Promise<ITutor> {
-    const validation = tutorSchema.safeParse({ nome, email, telefone })
-    if (!validation.success) {
-      const errorMessages = validation.error.errors.map(
-        (error) => error.message,
-      )
-      const errorMessage = errorMessages.join(', ')
-      throw createError(400, errorMessage)
-    }
     const tutorExistente = await this.repository.buscarTutorPorEmail(email)
     if (tutorExistente) {
       throw createError(409, 'Este email já foi cadastrado')
@@ -79,14 +71,6 @@ export class TutorService {
     const tutorExistente = await this.repository.buscarTutorPorId(id)
     if (!tutorExistente) {
       throw createError(404, 'Tutor não encontrado')
-    }
-    const validation = tutorSchema.safeParse({ id, nome, email, telefone })
-    if (!validation.success) {
-      const errorMessages = validation.error.errors.map(
-        (error) => error.message,
-      )
-      const errorMessage = errorMessages.join(', ')
-      throw createError(400, errorMessage)
     }
     tutorExistente.nome = nome
     tutorExistente.email = email

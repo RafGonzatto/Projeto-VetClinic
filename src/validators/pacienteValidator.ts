@@ -1,7 +1,6 @@
 import { z } from 'zod'
 
 export const pacienteSchema = z.object({
-  id: z.number().int().min(1, 'Id do pet é obrigatório'),
   nome: z.string().min(1, 'Nome é obrigatório'),
   especie: z.string().min(1, 'Especie é obrigatório'),
   dataNascimento: z

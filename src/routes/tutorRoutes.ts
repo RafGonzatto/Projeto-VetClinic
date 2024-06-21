@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import TutorController from '../controllers/tutorController'
+import { validationTutorMiddleware } from 'middlewares/validationTutorMiddleware'
 
 const router = Router()
 const tutorController = new TutorController()
@@ -72,7 +73,8 @@ router.get(
  *       '500':
  *         description: Erro ao criar tutor
  */
-router.post('/tutor', (req, res) => tutorController.criarTutor(req, res))
+router.post('/tutor',
+validationTutorMiddleware, (req, res) => tutorController.criarTutor(req, res))
 
 /**
  * @swagger
@@ -111,7 +113,8 @@ router.post('/tutor', (req, res) => tutorController.criarTutor(req, res))
  *       '500':
  *         description: Erro ao atualizar tutor
  */
-router.put('/tutor/:id', tutorController.atualizarTutor.bind(tutorController))
+router.put('/tutor/:id',
+validationTutorMiddleware, tutorController.atualizarTutor.bind(tutorController))
 
 /**
  * @swagger
