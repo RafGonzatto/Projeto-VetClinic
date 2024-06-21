@@ -1,12 +1,12 @@
-# Projeto VetClinic :dog:
+# VetClinic Project :dog:
 
-Este é um projeto para uma clínica veterinária fictícia, desenvolvido com TypeScript, Express.js e TypeOrm.
+This is a project for a fictional veterinary clinic, developed with TypeScript, Express.js, and TypeOrm.
 
-## Descrição
+## Description
 
-O Projeto VetClinic é uma aplicação para gerenciamento de tutores e pacientes de uma clínica veterinária. Ele permite a criação, atualização, listagem e remoção de tutores e pacientes, além de fornecer documentação da API utilizando Swagger.
+The VetClinic Project is an application for managing owners and patients of a veterinary clinic. It allows the creation, updating, listing, and removal of owners and patients, and provides API documentation using Swagger.
 
-## Tecnologias Utilizadas
+## Technologies Used
 
 - TypeScript@^5.4.5
 - Express.js@^4.19.2
@@ -14,58 +14,48 @@ O Projeto VetClinic é uma aplicação para gerenciamento de tutores e pacientes
 - Prettier@^3.2.5
 - Swagger-jsdoc@^6.2.8
 - Swagger-ui-express@^5.0.0
+- Eslint@^8.57.0
 - Nodemon@^3.1.0
 - Concurrently@^8.2.2
 
-## Configuração
+## Setup
 
-1. **Instalação de Dependências:**
+1. **Dependency Installation:**
 
-   Antes de iniciar o projeto, certifique-se de instalar todas as dependências necessárias. Você pode fazer isso executando:
+   Before starting the project, make sure to install all necessary dependencies. You can do this by running:
 
    ```bash
    npm install
-   ```
-
-2. **Configuração do Banco de Dados:**
-
-   Certifique-se de configurar corretamente o banco de dados no arquivo `.env` com a variável `DB_PATH` com o caminho onde ficará seu banco de dados.
-
-3. **Compilação e Execução dos arquivos TypeScript:**
-
-   Para compilar arquivos TypeScript, execute o seguinte comando. Isso gerará arquivos JavaScript que seu servidor poderá interpretar e já executara o projeto:
-
+2. **Database Configuration:**
+   Ensure you properly configure the database in the .env file with the DB_PATH variable specifying the path to your database.
+3. **Compile and Run TypeScript files:**
+   To compile TypeScript files, run the following command. This will generate JavaScript files that your server can interpret and will also start the project:
    ```bash
    npm run dev
    ```
+   The server will be available at http://localhost:3000.
+   
+## Usage
+After starting the server, you can begin making requests to the API using tools like Postman or cURL. Refer to the Swagger documentation at http://localhost:3000/api-docs for information on the available endpoints and their parameters.
 
-   O servidor estará disponível em `http://localhost:3000`.
-
-## Uso
-
-Após iniciar o servidor, você pode começar a fazer solicitações à API utilizando ferramentas como Postman ou cURL. Consulte a documentação Swagger em `http://localhost:3000/api-docs` para obter informações sobre os endpoints disponíveis e seus parâmetros.
-
-**Exemplo de comando**
+#### Example Command
 
 ```bash
-No Postman, configure sua URL para POST http://localhost:3000/api/paciente/1
-E adicione ao Body - raw o seguinte JSON:
+In Postman, set your URL to POST http://localhost:3000/api/paciente/1
+And add the following JSON to the Body - raw:
 
 {
- "nome": "Fidorento",
- "especie": "Cachorro dos Lagos",
- "dataNascimento": "30-10-2023"
+ "name": "Fidorento",
+ "species": "Lakes Dog",
+ "birthDate": "2023-10-30"
 }
 ```
 ![Imagem](src/images/api.png)
+## Contribution :tiger:
+Contributions are welcome! If you would like to contribute to this project, follow these steps:
 
-
-## Contribuição :tiger:
-
-Contribuições são bem-vindas! Se você quiser contribuir para este projeto, siga estas etapas:
-
-1. Faça um fork do repositório
-2. Crie uma nova branch (`git checkout -b feature/nova-feature`)
-3. Faça commit das suas alterações
-4. Faça push para a branch (`git push origin feature/nova-feature`)
-5. Abra um pull request
+Fork the repository
+Create a new branch (git checkout -b feature/new-feature)
+Commit your changes
+Push to the branch (git push origin feature/new-feature)
+Open a pull request
